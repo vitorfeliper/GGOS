@@ -1,0 +1,42 @@
+-----------------------NASM-----------------------------------------------------------------------------------------------
+Microsoft Windows [versão 10.0.19043.1110]
+(c) Microsoft Corporation. Todos os direitos reservados.
+
+D:\GGOS>cd Programs
+
+D:\GGOS\Programs>nasmPath.bat
+Microsoft Windows [versão 10.0.19043.1110]
+(c) Microsoft Corporation. Todos os direitos reservados.
+
+D:\GGOS\Programs>nasm -f bin D:/GGOS/Source/Assembly/mbr.asm -o D:/GGOS/Build/mbr.bin
+
+D:\GGOS\Programs>
+
+-------------------------------------------------------------------------------------------------------------------------
+---------------------------DD--------------------------------------------------------------------------------------------
+Microsoft Windows [versão 10.0.19043.1110]
+(c) Microsoft Corporation. Todos os direitos reservados.
+
+D:\GGOS>cd Programs
+
+D:\GGOS\Programs>dd bs=1c if=D:/GGOS/Build/mbr.bin of=D:/GGOS/DISK_BACKUP/HD_WIN_GGOS.img count=446
+rawwrite dd for windows version 0.6beta3.
+Written by John Newbigin <jn@it.swin.edu.au>
+This program is covered by terms of the GPL Version 2.
+
+446+0 records in
+446+0 records out
+
+D:\GGOS\Programs>
+--------------------------------------------------------------------------------------------------------------------------
+-------------------QEMU-----------------------------------------------------------------------------------------------------
+
+D:\GGOS>cd Programs
+
+D:\GGOS\Programs>cd qemu
+
+D:\GGOS\Programs\qemu>qemu-system-x86_64 -drive file=D:/GGOS/DISK_BACKUP/HD_WIN_GGOS.img,index=0,media=disk,format=raw
+
+D:\GGOS\Programs\qemu>
+
+--------------------------------------------------------------------------------------------------------------------------

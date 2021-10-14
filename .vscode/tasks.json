@@ -1,0 +1,48 @@
+{
+    // See https://go.microsoft.com/fwlink/?LinkId=733558
+    // for the documentation about the tasks.json format
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "buildMBR",
+            "type": "shell",
+            "command": "D:/GGOS/Programs/nasmPath.bat nasm -f bin D:/GGOS/Source/Assembly/mbr.asm -o D:/GGOS/Build/mbr.bin",
+            "group": "build"
+        },
+        {
+            "label": "buildBootLoader",
+            "type": "shell",
+            "command": "D:/GGOS/Programs/nasmPath.bat nasm -f bin D:/GGOS/Source/Assembly/bootloader.asm -o D:/GGOS/Build/bootloader.bin",
+            "group": "build"
+        },
+        {
+            "label": "copyMBR",
+            "type": "shell",
+            "group": "build",
+            "command": "D:/GGOS/Programs/dd.exe dd bs=1c if=D:/GGOS/Build/mbr.bin of=D:/GGOS/DISK_BACKUP/HD_WIN_GGOS.img",
+            "dependsOn": [
+                "buildMBR"
+            ]
+        },
+        {
+            "label": "copyBootLoader",
+            "type": "shell",
+            "group": "build",
+            "command": "D:/GGOS/Programs/dd.exe dd bs=1c if=D:/GGOS/Build/bootloader.bin of=D:/GGOS/DISK_BACKUP/HD_WIN_GGOS.img seek=512",
+            "dependsOn": [
+                "buildBootLoader",
+                "copyMBR"
+            ]
+        },
+        {
+            "label": "runOS",
+            "type": "shell",
+            "command": "D:/GGOS/Programs/qemu/qemu-system-x86_64 -drive file=D:/GGOS/DISK_BACKUP/HD_WIN_GGOS.img,index=0,media=disk,format=raw",
+            "group": "build",
+            "dependsOn":[
+                //"copyMBR",
+                "copyBootLoader"
+            ]
+        }
+    ]
+}

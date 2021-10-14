@@ -1,0 +1,22 @@
+======================COM PATH=================================
+> Executing task: D:/GGOS/Programs/nasmPath.bat nasm -f bin D:\GGOS/Source/Assembly/mbr.asm -o D:\GGOS/Build/mbr.bin <
+
+Microsoft Windows [versão 10.0.19043.1110]
+(c) Microsoft Corporation. Todos os direitos reservados.
+
+D:\GGOS>cd Programs
+
+D:\GGOS\Programs>cd qemu
+
+D:\GGOS\Programs\qemu>qemu-system-x86_64 -drive file=D:/GGOS/Build/mbr.bin,index=0,media=disk,format=raw
+
+
+===========================SEM PATH=========================================================================
+> Executing task: D:/GGOS/Programs/nasmPath.bat nasm -f bin D:\GGOS/Source/Assembly/mbr.asm -o D:\GGOS/Build/mbr.bin <
+
+Microsoft Windows [versão 10.0.19043.1110]
+(c) Microsoft Corporation. Todos os direitos reservados.
+
+D:\GGOS>nasm -f bin D:\GGOS/Source/Assembly/mbr.asm -o D:\GGOS/Build/mbr.bin
+
+D:\GGOS>

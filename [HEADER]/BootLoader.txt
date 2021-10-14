@@ -1,0 +1,165 @@
+1 - Preparando ambiente
+{Criação de pasta GGOS, instalação do Notepad++, instalação do Hyper-V, criação de maquina virtual, instalação do UltraISO}
+
+2 - Preparando o "Compilador"
+
+{ Compilação manual sem uso de IDE, Prompt de Comando ADM, cd "caminho específicado" --> Unidade: --> Unidade: cd "caminho" }
+
+3 - Criando o BOOT
+
+{Assembly Language}
+
+
+Deslocamento de memória onde será carregado o BOOT [ORG 0x7C00] endereço padrão de boot na memória
+
+notação de memória "7C00" é um endereço Hexadecimal, em decimal ele representa 31.744 em octal 76.000
+e em binário representa 0111 1100 0000 0000, visando a parte decimal, significa que especificamente no byte
+31.744 ou no binário 0111 1100 0000 0000, o boot será carregado. "0x" representa deslocamento de memória.
+"ORG" em assembly é a função que realizara o deslocamento de memória e logicamente ela recebe um deslocamento.
+primeiro chamda do deslocamento "0x", depois endereço de deslocamento(pode ser qualquer um, porém tem um padrão)
+"7C00", assim ficando [ORG 0x7C00] é aqui onde a bios carrega nosso programa.
+
+DEFINIR OS DOIS ULTIMOS BYTES DO BOOT
+
+*Lembrando*
+
+Boot tem que ter 512bytes de tamanho máximo, e ele tem uma assinatura no final desses dois últimos bytes
+então são 510bytes de tamanho o código para carregar o SO e os dois últimos são uma assinatura que seria "0x55"
+
+Defini dois bytes;
+
+{
+    db 0x55
+    db 0xAA
+};
+
+Defini essas assinaturas pois no processo de Booting a bios vai ler todos os bytes do 0 até o 512 e bem especificadamente
+nesses endereços definidos "0x55" e "0xAA" indica a bios que este programa se trata de um bootloader
+
+Caso ele não encontre nenhuma dessas definições a mensagem "Could not find any operating system" será exibida na tela
+
+
+--MONTADOR--
+
+vamos dizer ao montador "times" que durante 510x "times 510" do começo até o final "times 510-($-$$)"
+
+"-($-$$)" é uma instrução para o montador pegar do primeiro byte do nosso bootloader e vir preenchendo com 0 em cada byte
+instrução final fica dessa forma "times 510-($-$$) db 0" sem áspas
+
+
+Agora precisamos de uma maneira para executar esse loop para que quando ele carregar ele verifique todos esses 512b e depois desligue a maquina
+E assim saberemos que o boot está funcionando na hora de testar. "Ah por que ele temq desligar a maquina?" Por que não temos
+um SO ainda para carregar se a maquina permanecer ligada é por que o boot n funcionou se ela desligar é por que o boot funcionou
+porém não tinha sistema pra carregar e a instrução "not" foi executada. "not" é uma instrução para "parada" de execução de algo
+
+
+--CRIANDO O LOOP--
+
+
+Para criar o loop primeiro vamos criar um rótulo acima da instrução times
+
+"LOOP:"
+
+E vamos dizer a ele para saltar para o LOOP, criando assim um loop
+
+"LOOP:
+    jmp LOOP
+"
+
+Código final ficará assim:
+
+
+[ORG 0x7C00]
+
+LOOP:
+	jmp LOOP
+times 510-($-$$) db 0
+db 0x55
+db 0xAA
+
+
+ESSE É O BOOTLOADER
+---------------------------------------------------------
+
+*Baixe o wxHexEditor para ver como ficou o nosso programa*
+
+
+Como testar usando o nasm?
+
+Eu instalei o nasm no diretório "programs" da minha pasta GGOS, dentro destá pasta vai ter um programa .bat chamado "nasmPath.bat"
+Entre nesse programa e utilizando "cd" navegue até a pasta de origem do seu arquivo de boot
+
+Vai ficar exatamente dessa forma no nasmPath.bat
+
+
+Microsoft Windows [versão 10.0.19043.1110]
+(c) Microsoft Corporation. Todos os direitos reservados.
+
+D:\GGOS\Programs>cd
+D:\GGOS\Programs
+
+D:\GGOS\Programs>cd D:\GGOS\BootTeste
+
+D:\GGOS\BootTeste>nasm BootLoader.asm -f bin -o BootLoader.bin
+
+D:\GGOS\BootTeste>
+
+Ele não deu nenhuma mensagem de erro, então provavelmente o boot está funcionando como deveria
+
+Foi criado um arquivo chamado BootLoader.bin, assim quando eu for executar a linha "nasm BootLoader.asm -f bin -o BootLoader.bin"
+novamente ele derá um erro dizendo que não é possível criar esse mesmo arquivo bin
+
+
+
+
+--NAVEGANDO SEM IR DIRETO PRO nasmPath.bat--
+
+==============ESTAMOS NO PROMPT DE COMANDO DO WINDOWS=================
+Microsoft Windows [versão 10.0.19043.1110]
+(c) Microsoft Corporation. Todos os direitos reservados.
+
+C:\WINDOWS\system32>cd
+C:\WINDOWS\system32
+
+C:\WINDOWS\system32>cd D:
+D:\
+
+C:\WINDOWS\system32>cd D:\GGOS\Programs
+
+C:\WINDOWS\system32>D:
+
+D:\GGOS\Programs>nasmPath.bat
+=================ESTAMOS DENTRO DO nasmPath.bat====================
+Microsoft Windows [versão 10.0.19043.1110]
+(c) Microsoft Corporation. Todos os direitos reservados.
+
+D:\GGOS\Programs>cd D:\GGOS\BootTeste
+
+D:\GGOS\BootTeste>
+
+---------------wxHexEditor VIEW-----------------
+
+EB FE 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 
+00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 
+00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 
+00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 
+00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 
+00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 
+00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 
+00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 
+00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 
+00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 
+00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 
+00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 
+00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 
+00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 
+00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 55 AA
+
+---------TESTANDO O BOOT-----------------------
+Após ter criado o arquivo "BootLoader.bin" pelo nasmPath.bat, abra o UltraISO ou qualquer outro programa que crie 
+isos e crie uma iso incializável com o "BootLoader.bin", vá ao HyperV ou seu programa de maquina virtual
+e coloque na sessão de controlador IDE1 ou controlador a sua imagem de bios
+
+Se der certo ele vai inciar e ficar piscando dando o famoso "bootloop" pois não sistema a carregar ainda...
+====================================================================FIM=========================================================

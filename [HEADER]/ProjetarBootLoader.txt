@@ -1,0 +1,61 @@
+==============================================PROJETAR BOOTLOADER=================================
+
+------CAMINHO LÓGICO----------------->>>>
+BIOS --> MBR(MASTER BOOT RECORDER) --> BOOTLOADER/BOOTMANAGER --> KERNEL --> USER SPACE
+------------------------------------->>>>
+
+
+------------BOOTLOADER-----------------------
+
+MAPA DE MEMÓRIA
+_____________________________________________________________________________________________.
+|IVT|BDA| L |MBR|	LIVRE	   |EBDA|VIDEO DISPLAY MEMORY|VIDEO BIOS|BIOS EXPANSIONS|BIOS|
+‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾*
+*A partir do endereço B800 consegue imprimir caracteres na tela*
+
+
+MAPA DE DISCO
+______________________________________.
+|MBR|BOOT LOADER|BOOT/FAT16|ROOT/FAT32|
+‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾*
+
+
+MBR - MASTER BOOT RECORDER
+BOOT LOADER - CÓDIGO PARA LER AS PARTIÇÕES E CARREGAR O KERNEL
+BOOT - PARTIÇÃO ONDE CONTERÁ OS KERNELS
+ROOT - RAIZ DO SISTEMA DE ARQUIVOS
+
+-----------------------------------------------------------
+OBJETIVO
+=========|==============================||
+
+LER PARTIÇÕES FAT
+IMPRIMIR LOGS NA SAÍDA SERIAL
+CARREGAR ARQUIVOS EXECUTÁVEIS DO DISCO
+INTERFACE DE TERMINAL
+CARREGADO EM 0x500
+=========|===============================||
+------PROTÓTIPO DE TELA------------------||
+
+GGOS -- BOOTLOADER
+V0.1 2021
+
+OPÇÃO	N° DISCO   N°PART.    TIPO    TAMANHO
+‾‾‾‾‾	‾‾‾‾‾‾‾‾   ‾‾‾‾‾‾‾    ‾‾‾‾    ‾‾‾‾‾‾‾
+0	DISCO 0    PART 0     FAT16    32MB
+1	DISCO 1    PART 1     FAT32    1,9GB
+
+SELECIONE A PARTIÇÃO>_
+------------------------------------------||
+FORMATO DO EXECUTÁVEL NA MEMORIA
+================|=========================||
+_________________________________.
+|PSP|	      PROGRAM		 |
+‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾*
+PSP - PROGRAM SEGMENT PREFIX /* CARREGA METADADOS REFERENTES AO PROGRAMA EM EXECUÇÃO */
+
+PROGRAM - CÓDIGO EXECUTÁVEL CARREGADO DO ARQUIVO GGE(GANJGAME EXECUTABLE) COM
+
+
+
+

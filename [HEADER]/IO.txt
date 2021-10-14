@@ -1,0 +1,7 @@
+push word 0Fh
+push word title
+call prints
+
+;push word 0Eh
+;push word msg
+;call prints

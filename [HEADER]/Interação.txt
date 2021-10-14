@@ -1,0 +1,89 @@
+---------------------------INTERAÇÃO DOS PROGRAMAS ATÉ O SISTEMA FINAL-------------------------------------------
+
+
+1 - VsCode
+Utilizaremos para codificar tudo, apesar da "compilação" ser semi-automática
+
+PASSOS PENDRIVE
+
+1 - Pegue um pendrive
+2 - Com o gerenciador de partições e disco do sistema windows/linux exclua o volume do pendrive
+3 - Crie um novo volume com espaço de 32mb e dê o nome de BOOT, e formate rápido
+4 - Agora crie um novo valume na mesma unidade com o resto do espaço disponível e dê o nome de ROOT e formate rápido
+
+WX_HEX_EDITOR
+1 - Abra como adm o programa wxHexEditor.exe
+2 - Vá em dispositivos e clique em abrir dispositivos e selecione Phishical Drive 2(ou seu pendrive)
+3 - agora clique novamente em dispositivos e selecione ferramentas de imagens e em seguida selecione apagar
+4 - Selecione o Phishical Drive 2 e dentre as opções deixe-0 0x00(ou algo equivalente a 0) e clique em OK
+5 - Se após o processo ele der erro de acesso ou não, de qualquer forma repita "PASSOS PENDRIVE"
+6 - Feito isso, apra novamente o wxHexEditor.exe
+7 - Vá em dispositivos -> abrir dispositivos -> Phishical Drive 2 -> Dispositivos -> ferramentas de imagem
+-> Backup -> selecione onde quer fazer o seu backup(de prefência que você lembre o caminho) e faça o backup
+
+
+DD FOR WINDOWS
+
+1 - Baixe o dd for windows(O projeto com tudo usada estará disponível no GIT em breve)
+2 - Salve o dd.exe em algum local que você lembre e consiga chamá-lo pelo prompt do vsCode
+
+VSCODE TASK
+1 - Crie uma nova task
+2 - Deixe-a da seguinte forma
+
+{
+    // See https://go.microsoft.com/fwlink/?LinkId=733558
+    // for the documentation about the tasks.json format
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "buildMBR",
+            "type": "shell",
+            "command": "D:/GGOS/Programs/nasmPath.bat nasm -f bin D:/GGOS/Source/Assembly/mbr.asm -o D:/GGOS/Build/mbr.bin",
+            "group": "build"
+        },
+        {
+            "label": "copyMBR",
+            "type": "shell",
+            "group": "build",
+            "command": "D:/GGOS/Programs/dd.exe dd bs=1c if=D:/GGOS/Build/mbr.bin of=D:/GGOS/DISK_BACKUP/HD_WIN_GGOS.img count=446",
+            "dependsOn": [
+                "buildMBR"
+            ]
+        },
+        {
+            "label": "runOS",
+            "type": "shell",
+            "command": "D:/GGOS/Programs/qemu/qemu-system-x86_64 -drive file=D:/GGOS/DISK_BACKUP/HD_WIN_GGOS.img,index=0,media=disk,format=raw",
+            "group": "build",
+            "dependsOn":[
+                "copyMBR"
+            ]
+        }
+    ]
+}
+
+ENTENDENDO A TASK
+
+A task nada mais é que uma sequência de passos, nesse caso semi-automática. Vamos entender na prática
+como funciona a interação de todos os programas baixados até agora. Não se esqueça de baixar o QEMU
+e salvá-lo em algum lugar que você lembre para acessá-lo via prompt.
+
+Primeiro de tudo
+buildMBR - Aqui será executado o comando do nasm para atualizar o seu arquivo baixo nível criado
+vamos precisar desse arquivo para realizar o processo de montagem de da imagem.
+Como o processo é semi-automático, ao apertar (control + shift + B), e clicar em "runOS", você
+terá de navegar pelas pastas para executar manualmente esse comando do nasm(TODOS OS COMANDOS ESTÃO DISPONÍVEIS
+NO BLOCO DE NOTAS "commands")
+
+SEGUNDO
+copyMBR - aqui será executado o comando do "dd", o "dd" vai basicamente pegar o nosso mbr.bin ja atualizado
+com o nasm e copiar as informações contidas nele para o backup de imagem feito no "wxHexEditor"
+
+TERCEIRO
+runOS - Aqui vai básicamente rodar o nosso sistema, porém como a compilção é semi-automática, ou seja, quando
+abrir a task runOS ele apenas vai entrar no diretório do seu projeto, o resto terá de fazer manualmente
+mas alguns processos ja se tornam automatizados com o nasm e o dd.
+Entre na pasta onde está o seu qemu e execute sua imagem
+----------------------------------------------------------------------------------------------------------------------------------------
+E assim que funciona toda a interação do projeto!!

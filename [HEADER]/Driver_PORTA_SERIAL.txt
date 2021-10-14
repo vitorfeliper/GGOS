@@ -1,0 +1,33 @@
+---------------------------------DRIVER PORTA SERIAL-----------------------------------------------------------
+
+
+Para entendermos como funciona a saída serial, precisamos entender o seu conector[ ... ]
+
+I - SIMPLICIDADE
+II - USAR DEPURADORES
+III - DISPOSITIVOS SEM TECLADO E MONITOR
+IV - LOGGING
+V - NETWAORK E TRANSFERÊNCIA DE ARQUIVOS
+
+PORTAS
+____________________
+|COM PORT |IO PORT |
+‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾
+|COM 1	  |0x3F8   |
+|COM 2	  |0x2F8   |
+|COM 3	  |0x3E8   |
+|COM 4	  |0x2E8   |
+‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾
+
+--------------------------------------------------------------------------------------------------------------
+
+=======================INICIALIZAR PORTA===================================================================
+1 - Desabilitar todas as interrupções
+2 - Habilitar o bit DLAB
+3 - Definir o divisor
+4 - Definir o bit de eparidade e habilitar a fila de entrada e saída de dados
+5 - Habilitar todas as comunicações
+============================================================================================================
+
+
+

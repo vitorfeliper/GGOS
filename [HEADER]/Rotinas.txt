@@ -1,0 +1,116 @@
+================================ROTINAS_GGOS=========================================================
+
+Sistemas Operacionais modernos, como trabalham?
+
+Iniciar sistema --> Ativar modo Gráfico
+
+E não imprimirá textos e sim cores...
+
+1 - Definindo de texto para gráficos pixel a pixel
+
+Abrir o BootLoader
+
+Registradores utilizados "AH" e "AL"
+
+Eles pegam cada um 8b, 1b cada AH e AL
+
+Trabalhando com 16b, um inteiro dessa máquina será divido em 2 então
+o AH vai pegar a parte mais alta da sequência de bits e o AL a parte mais baixa
+
+Temos que definir AH = 0 e AL = 13(DECIMAL 19)
+
+como fazemos isso?
+
+mov ah, 0x00
+mov al, 0x13 (320x200)
+
+chama interrupção
+
+int 0x10
+
+em assembly "int" = interrupção
+
+por que precisamos de uma interrupção?
+Ela vai servir para não entrarmos em um loop infinito!
+--------------------------------------------------------
+
+Após fazer esse procedimento, atualize o BootLoader usando o mesmo procedimento do nasmPath
+E em seguida atualizando a .iso de proferência com o mesmo nome que ja está na maquina virtual
+
+----------------------------------------------------------------------------------------------------
+Após tudo isso o OS vai mudar de modo DOS para modo GRAPHIC_SYSTEM
+
+
+Ficaria assim o código final
+
+[ORG 0x7C00]
+
+; DEFINE O MODO DE TEXTO AH e AL
+
+	mov ah, 0x00;Tipo de função  definirModoDeVideo()
+	mov al, 0x13;Tipo do modo parâmetros de função
+	int 0x10
+LOOP:
+	jmp LOOP
+times 510-($-$$) db 0
+db 0x55
+db 0xAA
+
+
+---------------------------------------------------------------------------------------------------------
+DESENHANDO COM CORES
+
+Criar uma nova rotina(função)
+
+mov ah, 0x0C
+
+a função 0x0C é responsável por gravar no video um determinado pixel com uma determinada cor
+
+Antes do loop defini alguns registradores que utilizaremos com parâmetros pra função
+
+"bh", seria basicamente a página em que o computador renderiza no momento
+"cx", registrador para uso geral, nessa função ele vai armazenar a posição X
+"dx", registrador para uso geral, nessa função ele vai armazenar a posição Y
+
+Após definir os valores dos registradores globais, teremos que comparar a cor usando
+cmp al, 0xFF  nesse modo de video temos apenas 256 cores
+
+O código final ficará assim:
+
+
+[ORG 0x7C00]
+
+; DEFINE O MODO DE TEXTO AH e AL
+
+	mov ah, 0x00;Tipo de função  definirModoDeVideo()
+	mov al, 0x13;Tipo do modo parâmetros de função
+	int 0x10
+; Parâmetros utilizados
+
+; COR DE FUNDO
+	mov al, 0x01; Cor do pixel
+	mov bh, 0x00; Numero da página
+	mov cx, 0x00; Posição X
+	mov dx, 0x00; Poisção Y
+
+LOOP:
+	mov ah, 0x0C
+	int 0x10; chama a função de video
+	inc cx; avança para o pixel a direita 
+	cmp cx, 0x0140; verifica se igual a 320 
+	jne LOOP; continua se ainda não é 320
+	mov cx, 0x00; volta para a posição 0 do eixo X
+	inc dx; avançar para a próxima linha
+	cmp dx, 0xC8; verifica se ja chegou no limite inferior
+	jne LOOP
+	mov dx, 0x00; volta para a primeira linha 
+	inc al; pula para a próxima cor
+	cmp al, 0xFF; verifica se é a ultima cor
+	je RESETCOR
+	jmp LOOP
+RESETCOR:
+	mov al, 0x00
+	jmp LOOP
+times 510-($-$$) db 0
+db 0x55
+db 0xAA

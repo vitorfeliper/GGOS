@@ -1,0 +1,29 @@
+-----------------------------------------DISCO INICIALIZÁVEL------------------------------------------------
+
+MBR = 512b ocupa apenas 1 setor
+
+
+ESTRUTURA
+
+|ADDRESS      |		DESCRIPTION					  |‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾|
+|HEX   | DEC  |								  |	SIZE(BYTES)	|
+==============|								  |_____________________|
+__________________________________________________________________________|			|
+| +000 |  +0  |BOOTSTRAP CODE AREA				          |	    446		|
+‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾|			|
+| +1BE | +446 |PARTITION ENTRY N°1|PARTITION TABLE(FOR PRIMARY PARTITIONS)|	    16		|
+| +1CE | +462 |PARTITION ENTRY N°2|PARTITION TABLE(FOR PRIMARY PARTITIONS)|	    16		|
+| +1DE | +478 |PARTITION ENTRY N°3|PARTITION TABLE(FOR PRIMARY PARTITIONS)|	    16		|
+| +1EE | +494 |PARTITION ENTRY N°4|PARTITION TABLE(FOR PRIMARY PARTITIONS)|	    16		|
+| +1FE | +510 |         55HEX||||||||||||||||||||BOOT SIGNATURE||||||||||||	    2		|
+| +1FF | +511 |         AAHEX||||||||||||||||||||BOOT SIGNATURE||||||||||||	    2		|
+‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾
+					     TOTAL SIZE: 446 + 4 * 16 + 2|	    512		|
+‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾
+
+Como esse é um MBR básico, este terá suporte a apenas no máximo 4 partições de disco
+____________________________________________________________________
+|CÓDIGO|PARTITION 0|PARTITION 1|PARTITION 2|PARTITION 3|           |
+‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾
+
+
